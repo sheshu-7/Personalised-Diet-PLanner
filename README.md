@@ -1,7 +1,7 @@
-# Personalized-Diet-PLanner
+# Personalised-Diet-PLanner
 ## Overview
 
-The **Personalized Indian Diet Planner** is a web application designed to help users create a customized diet plan based on their age, weight, height, activity level, and financial status.
+The **Personalised Indian Diet Planner** is a web application designed to help users create a customized diet plan based on their age, weight, height, activity level, and financial status.
 The application provides a variety of meal options tailored to different dietary needs and preferences.
 
 ## Features
