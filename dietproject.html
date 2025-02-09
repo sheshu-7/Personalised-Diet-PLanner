@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalized Indian Diet Planner</title>
+  <style>
+    /* General Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('https://img.freepik.com/free-photo/flat-lay-vegetables-mix-chicken-drumstick-bowl-with-copy-space_23-2148369706.jpg?t=st=1739089356~exp=1739092956~hmac=0520b21c7ffb492e48c00a5a275a72691bee368b8ed4380a4acbe7f0f01c2dcf&w=1380') no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
+    }
+
+    /* Header Styling */
+    header {
+      background-color: rgba(8, 122, 33, 0.678);
+      color: white;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-family: cursive;
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px #000;
+    }
+
+    /* Container Styling */
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Form Styling */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #38b6ff;
+      outline: none;
+    }
+
+    button {
+      background-color: #38b6ff;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #007bb5;
+    }
+
+    .diet-plan {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .diet-plan h3 {
+      color: #38b6ff;
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+
+    .diet-plan ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .diet-plan ul li {
+      margin: 10px 0;
+      padding: 10px;
+      background: #e9f5ff;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+
+      header {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Personalized Diet Planner
+  </header>
+
+  <div class="container">
+    <h2>Enter Your Details</h2>
+    <form id="diet-form">
+      <div class="form-group">
+        <label for="age">Age</label>
+        <input type="number" id="age" placeholder="Enter your age" required>
+      </div>
+
+      <div class="form-group">
+        <label for="weight">Weight (in kg)</label>
+        <input type="number" id="weight" placeholder="Enter your weight" required>
+      </div>
+
+      <div class="form-group">
+        <label for="height">Height (in cm)</label>
+        <input type="number" id="height" placeholder="Enter your height" required>
+      </div>
+
+      <div class="form-group">
+        <label for="activity-level">Activity Level</label>
+        <select id="activity-level" required>
+          <option value="">Select activity level</option>
+          <option value="sedentary">Sedentary</option>
+          <option value="light">Light Activity</option>
+          <option value="moderate">Moderate Activity</option>
+          <option value="active">Highly Active</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="financial-status">Financial Status</label>
+        <select id="financial-status" required>
+          <option value="">Select financial status</option>
+          <option value="low">Low Budget</option>
+          <option value="medium">Medium Budget</option>
+          <option value="high">High Budget</option>
+        </select>
+      </div>
+
+      <button type="submit">Get Diet Plan</button>
+    </form>
+
+    <div class="diet-plan" id="diet-plan" style="display: none;">
+      <h3>Your Personalized Diet Plan</h3>
+      <ul id="plan-details"></ul>
+    </div>
+  </div>
+
+  <script>
+    const dietForm = document.getElementById('diet-form');
+    const dietPlan = document.getElementById('diet-plan');
+    const planDetails = document.getElementById('plan-details');
+
+    const dietPlans = {
+      low: {
+        sedentary: {
+          '0-5': ['Masoor dal with rice', 'Cucumber and chapati'],
+          '6-10': ['Poha with peas', 'Rice with mixed veggies'],
+          '11-15': ['Rice with dal and roti', 'Vegetable curry with chapati'],
+          '16-20': ['Cabbage stir-fry', 'Rice with dal'],
+          '21-25': ['Chole with rice', 'Vegetable pulao'],
+          '26-30': ['Paneer curry', 'Chapati with boiled potatoes'],
+          '31-35': ['Aloo gobi', 'Rice with mixed vegetables'],
+          '36-40': ['Khichdi', 'Chapati with dal'],
+          '41-45': ['Vegetable soup', 'Rice with beans'],
+          '46-50': ['Vegetable stir-fry', 'Chapati with dal'],
+          '51-55': ['Chana dal', 'Rice with curd'],
+          '56-60': ['Steamed veggies', 'Chapati with dal'],
+          '61+': ['Oats with fruits', 'Rice with curd']
+        },
+        light: {
+          '0-5': ['Vegetable upma', 'Fruit salad'],
+          '6-10': ['Idli with sambar', 'Vegetable sandwich'],
+          '11-15': ['Dalia with vegetables', 'Curd rice'],
+          '16-20': ['Vegetable khichdi', 'Mixed salad'],
+          '21-25': ['Pasta with vegetables', 'Vegetable soup'],
+          '26-30': ['Chickpea salad', 'Vegetable paratha'],
+          '31-35': ['Vegetable pulao', 'Raita'],
+          '36-40': ['Vegetable curry with rice', 'Chapati with salad'],
+          '41-45': ['Vegetable stir-fry', 'Curd with rice'],
+          '46-50': ['Vegetable soup', 'Chapati with dal'],
+          '51-55': ['Oats with milk', 'Rice with vegetables'],
+          '56-60': ['Steamed vegetables', 'Chapati with curd'],
+          '61+': ['Fruit smoothie', 'Rice with lentils']
+        },
+        moderate: {
+          '0-5': ['Vegetable dosa', 'Curd rice'],
+          '6-10': ['Vegetable pulao', 'Paneer bhurji'],
+          '11-15': ['Vegetable sandwich', 'Chole with rice'],
+          '16-20': ['Vegetable biryani', 'Dal with roti'],
+          '21-25': ['Pasta with sauce', 'Mixed vegetable curry'],
+          '26-30': ['Paneer tikka', 'Rice with dal'],
+          '31-35': ['Vegetable curry with chapati', 'Fruit salad'],
+          '36-40': ['Vegetable fried rice', 'Raita'],
+          '41-45': ['Grilled vegetables', 'Chapati with dal'],
+          '46-50': ['Vegetable soup', 'Rice with beans'],
+          '51-55': ['Vegetable khichdi', 'Curd with rice'],
+          '56-60': ['Oats with fruits', 'Chapati with vegetables'],
+          '61+': ['Fruit salad', 'Rice with lentils']
+        },
+        active: {
+          '0-5': ['Vegetable smoothie', 'Fruit salad'],
+          '6-10': ['Vegetable sandwich', 'Pasta with veggies'],
+          '11-15': ['Chole with rice', 'Vegetable stir-fry'],
+          '16-20': ['Vegetable biryani', 'Mixed salad'],
+          '21-25': ['Paneer tikka', 'Vegetable curry with rice'],
+          '26-30': ['Chickpea salad', 'Vegetable fried rice'],
+          '31-35': ['Vegetable kebabs', 'Fruit chaat'],
+          '36-40': ['Vegetable curry with roti', 'Raita'],
+          '41-45': ['Vegetable soup', 'Chapati with dal'],
+          '46-50': ['Vegetable khichdi', 'Curd with rice'],
+          '51-55': ['Oats with fruits', 'Rice with vegetables'],
+          '56-60': ['Steamed vegetables', 'Chapati with curd'],
+          '61+': ['Fruit smoothie', 'Rice with lentils']
+        }
+      },
+      medium: {
+        sedentary: {
+          '0-5': ['Masala dosa', 'Curd rice'],
+          '6-10': ['Upma with vegetables', 'Pasta with veggies'],
+          '11-15': ['Pav bhaji', 'Vegetable sandwich'],
+          '16-20': ['Dhokla with chutney', 'Chana masala with rice'],
+          '21-25': ['Biryani with raita', 'Dal makhani with roti'],
+          '26-30': ['Palak paneer', 'Rice with curry'],
+          '31-35': ['Vegetable kebabs', 'Fried rice with tofu'],
+          '36-40': ['Aloo tikki', 'Paratha with curd'],
+          '41-45': ['Grilled chicken', 'Vegetable pulao'],
+          '46-50': ['Mixed lentils', 'Paratha with curd'],
+          '51-55': ['Butter chicken', 'Tandoori roti'],
+          '56-60': ['Vegetable soup', 'Chappati with salad'],
+          '61+': ['Oats with nuts', 'Dal with vegetables']
+        },
+        light: {
+          '0-5': ['Vegetable idli', 'Fruit chaat'],
+          '6-10': ['Vegetable upma', 'Paneer sandwich'],
+          '11-15': ['Vegetable pulao', 'Curd with rice'],
+          '16-20': ['Vegetable khichdi', 'Mixed salad'],
+          '21-25': ['Pasta with vegetables', 'Vegetable soup'],
+          '26-30': ['Chickpea salad', 'Vegetable paratha'],
+          '31-35': ['Vegetable curry with rice', 'Chapati with salad'],
+          '36-40': ['Vegetable stir-fry', 'Curd with rice'],
+          '41-45': ['Vegetable soup', 'Chapati with dal'],
+          '46-50': ['Vegetable soup', 'Chapati with dal'],
+          '51-55': ['Oats with milk', 'Rice with vegetables'],
+          '56-60': ['Steamed vegetables', 'Chapati with curd'],
+          '61+': ['Fruit smoothie', 'Rice with lentils']
+        },
+        moderate: {
+          '0-5': ['Vegetable dosa', 'Curd rice'],
+          '6-10': ['Vegetable pulao', 'Paneer bhurji'],
+          '11-15': ['Vegetable sandwich', 'Chole with rice'],
+          '16-20': ['Vegetable biryani', 'Dal with roti'],
+          '21-25': ['Pasta with sauce', 'Mixed vegetable curry'],
+          '26-30': ['Paneer tikka', 'Rice with dal'],
+          '31-35': ['Vegetable curry with chapati', 'Fruit salad'],
+          '36-40': ['Vegetable fried rice', 'Raita'],
+          '41-45': ['Grilled vegetables', 'Chapati with dal'],
+          '46-50': ['Vegetable soup', 'Rice with beans'],
+          '51-55': ['Vegetable khichdi', 'Curd with rice'],
+          '56-60': ['Oats with fruits', 'Chapati with vegetables'],
+          '61+': ['Fruit salad', 'Rice with lentils']
+        },
+        active: {
+          '0-5': ['Paneer tikka', 'Curd rice'],
+          '6-10': ['Vegetable biryani', 'Chicken curry with rice'],
+          '11-15': ['Lamb kebabs with naan', 'Pasta with vegetables'],
+          '16-20': ['Butter chicken', 'Mixed vegetable curry'],
+          '21-25': ['Prawn biryani', 'Paneer butter masala'],
+          '26-30': ['Fish curry with rice', 'Vegetable stir-fry'],
+          '31-35': ['Tandoori chicken', 'Vegetable fried rice'],
+          '36-40': ['Hyderabadi biryani', 'Raita'],
+          '41-45': ['Grilled chicken with salad', 'Vegetable pulao'],
+          '46-50': ['Mutton curry with rice', 'Garlic naan'],
+          '51-55': ['Goan fish curry', 'Chapati with vegetables'],
+          '56-60': ['Kadhi pakora', 'Jeera rice'],
+          '61+': ['Steamed fish', 'Masala khichdi']
+        }
+      },
+      high: {
+        sedentary: {
+          '0-5': ['Ghee rice with dal', 'Coconut curry with rice'],
+          '6-10': ['Cheese dosa', 'Mushroom curry with rice'],
+          '11-15': ['Vegetable biryani', 'Lamb kebabs with naan'],
+          '16-20': ['Paneer butter masala', 'Pulao with raita'],
+          '21-25': ['Chicken tikka masala', 'Mutton biryani'],
+          '26-30': ['Prawn curry', 'Methi thepla'],
+          '31-35': ['Hyderabadi biryani', 'Butter naan'],
+          '36-40': ['Lamb curry with paratha', 'Kadhai paneer'],
+          '41-45': ['Tandoori chicken', 'Lobster curry'],
+          '46-50': ['Chicken shawarma', 'Cheese stuffed naan'],
+          '51-55': ['Goan fish curry', 'Garlic naan'],
+          '56-60': ['Kadhi pakora', 'Jeera rice'],
+          '61+': ['Steamed fish', 'Masala khichdi']
+        },
+        light: {
+          '0-5': ['Cheese sandwich', 'Fruit salad'],
+          '6-10': ['Vegetable pasta', 'Paneer tikka'],
+          '11-15': ['Chicken salad', 'Vegetable soup'],
+          '16-20': ['Fish curry with rice', 'Mixed vegetable salad'],
+          '21-25': ['Grilled chicken with veggies', 'Pasta primavera'],
+          '26-30': ['Shrimp stir-fry', 'Vegetable fried rice'],
+          '31-35': ['Chicken biryani', 'Raita'],
+          '36-40': ['Vegetable curry with naan', 'Fruit chaat'],
+          '41-45': ['Grilled fish', 'Vegetable pulao'],
+          '46-50': ['Chicken curry', 'Rice with dal'],
+          '51-55': ['Vegetable khichdi', 'Curd with rice'],
+          '56-60': ['Oats with fruits', 'Chapati with vegetables'],
+          '61+': ['Fruit smoothie', 'Rice with lentils']
+        },
+        moderate: {
+          '0-5': ['Paneer tikka', 'Curd rice'],
+          '6-10': ['Vegetable biryani', 'Chicken curry with rice'],
+          '11-15': ['Lamb kebabs with naan', 'Pasta with vegetables'],
+          '16-20': ['Butter chicken', 'Mixed vegetable curry'],
+          '21-25': ['Prawn biryani', 'Paneer butter masala'],
+          '26-30': ['Fish curry with rice', 'Vegetable stir-fry'],
+          '31-35': ['Tandoori chicken', 'Vegetable fried rice'],
+          '36-40': ['Hyderabadi biryani', 'Raita'],
+          '41-45': ['Grilled chicken with salad', 'Vegetable pulao'],
+          '46-50': ['Mutton curry with rice', 'Garlic naan'],
+          '51-55': ['Goan fish curry', 'Chapati with vegetables'],
+          '56-60': ['Kadhi pakora', 'Jeera rice'],
+          '61+': ['Steamed fish', 'Masala khichdi']
+        },
+        active: {
+          '0-5': ['Ghee rice with dal', 'Coconut curry with rice'],
+          '6-10': ['Cheese dosa', 'Mushroom curry with rice'],
+          '11-15': ['Vegetable biryani', 'Lamb kebabs with naan'],
+          '16-20': ['Paneer butter masala', 'Pulao with raita'],
+          '21-25': ['Chicken tikka masala', 'Mutton biryani'],
+          '26-30': ['Prawn curry', 'Methi thepla'],
+          '31-35': ['Hyderabadi biryani', 'Butter naan'],
+          '36-40': ['Lamb curry with paratha', 'Kadhai paneer'],
+          '41-45': ['Tandoori chicken', 'Lobster curry'],
+          '46-50': ['Chicken shawarma', 'Cheese stuffed naan'],
+          '51-55': ['Goan fish curry', 'Garlic naan'],
+          '56-60': ['Kadhi pakora', 'Jeera rice'],
+          '61+': ['Steamed fish', 'Masala khichdi']
+        }
+      }
+    };
+
+    const calculateBMI = (weight, height) => {
+      const heightInMeters = height / 100; // Convert height to meters
+      return weight / (heightInMeters * heightInMeters); // BMI formula
+    };
+
+    const getDietPlan = (age, activityLevel, financialStatus, weight, height) => {
+      const bmi = calculateBMI(weight, height);
+      let bmiCategory;
+
+      if (bmi < 18.5) {
+        bmiCategory = 'underweight';
+      } else if (bmi >= 18.5 && bmi < 24.9) {
+        bmiCategory = 'normal';
+      } else if (bmi >= 25 && bmi < 29.9) {
+        bmiCategory = 'overweight';
+      } else {
+        bmiCategory = 'obese';
+      }
+
+      const plans = dietPlans[financialStatus][activityLevel];
+      if (!plans) return ['No diet plan available'];
+
+      const ageRange = Object.keys(plans).find(range => {
+        const [min, max] = range.split('-').map(Number);
+        return age >= min && age <= max;
+      });
+
+      const selectedPlan = plans[ageRange] || ['No diet plan available for this age'];
+
+      // Return the selected plan without filtering for diet type
+      return selectedPlan;
+    };
+
+    const handleInput = () => {
+      const age = parseInt(document.getElementById('age').value, 10) || 0;
+      const weight = parseInt(document.getElementById('weight').value, 10) || 0;
+      const height = parseInt(document.getElementById('height').value, 10) || 0;
+      const activityLevel = document.getElementById('activity-level').value;
+      const financialStatus = document.getElementById('financial-status').value;
+
+      if (!activityLevel || !age || !financialStatus || !weight || !height) {
+        dietPlan.style.display = 'none';
+        return;
+      }
+
+      const selectedDiet = getDietPlan(age, activityLevel, financialStatus, weight, height);
+      planDetails.innerHTML = selectedDiet.map(item => `<li>${item}</li>`).join('');
+      dietPlan.style.display = 'block'; // Show the diet plan only after clicking the button
+    };
+
+    dietForm.addEventListener('submit', (event) => {
+      event.preventDefault(); // Prevent form submission
+      handleInput();
+    });
+  </script>
+</body>
+</html>
